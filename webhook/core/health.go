@@ -12,7 +12,7 @@ const (
 	GCE_INSTANCE_REGION = "GCE_INSTANCE_REGION"
 )
 
-func healthHandler(w http.ResponseWriter, r *http.Request) {
+func HealthHandler(w http.ResponseWriter, r *http.Request) {
 	if os.Getenv("GITLAB_TOKEN") == "" {
 		w.WriteHeader(http.StatusConflict)
 		io.WriteString(w, "GITLAB_TOKEN environment variable is not defined")

@@ -15,7 +15,7 @@ func init() {
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/health" {
-		core.healthHandler(w, r)
+		core.HealthHandler(w, r)
 		return
 	}
 
