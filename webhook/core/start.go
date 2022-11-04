@@ -8,7 +8,7 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-func StartInstance(ctx context.Context, id string) error {
+func StartInstance(ctx context.Context) error {
 	client, err := compute.NewService(ctx)
 	if err != nil {
 		return err
