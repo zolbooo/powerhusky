@@ -1,4 +1,4 @@
-module github.com/zolbooo/powerhusky/daemon
+module github.com/zolbooo/powerhusky/webhook
 
 go 1.19
 
