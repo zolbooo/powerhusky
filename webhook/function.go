@@ -1,29 +1,20 @@
-package daemon
+package webhook
 
 import (
-	"io"
 	"net/http"
-	"os"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 )
 
 func init() {
-	functions.HTTP("health", healthHandler)
+	functions.HTTP("powerhusky", rootHandler)
 }
 
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	if os.Getenv("GITLAB_TOKEN") == "" {
-		w.WriteHeader(http.StatusConflict)
-		io.WriteString(w, "GITLAB_TOKEN environment is not defined")
-		return
-	}
-	if os.Getenv("GCP_API_TOKEN") == "" {
-		w.WriteHeader(http.StatusConflict)
-		io.WriteString(w, "GCP_API_TOKEN environment is not defined")
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/health" {
+		healthHandler(w, r)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, "OK")
+	w.WriteHeader(http.StatusNotFound)
 }
