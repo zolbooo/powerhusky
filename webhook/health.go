@@ -12,9 +12,9 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "GITLAB_TOKEN environment variable is not defined")
 		return
 	}
-	if os.Getenv("GCP_API_TOKEN") == "" {
+	if os.Getenv("GCE_INSTANCE_ID") == "" {
 		w.WriteHeader(http.StatusConflict)
-		io.WriteString(w, "GCP_API_TOKEN environment variable is not defined")
+		io.WriteString(w, "GCP_INSTANCE_ID environment variable is not defined")
 		return
 	}
 
