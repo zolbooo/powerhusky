@@ -14,7 +14,7 @@ func StartInstance(ctx context.Context) error {
 		return err
 	}
 
-	op, err := client.Instances.Start(os.Getenv("GCP_PROJECT"), os.Getenv("GCP_INSTANCE_REGION"), os.Getenv("GCE_INSTANCE_ID")).Do()
+	op, err := client.Instances.Start(os.Getenv(GCP_PROJECT), os.Getenv(GCE_INSTANCE_REGION), os.Getenv(GCE_INSTANCE_ID)).Do()
 	if err != nil {
 		return err
 	}
