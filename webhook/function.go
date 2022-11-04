@@ -7,6 +7,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/zolbooo/powerhusky/webhook/core"
+	"github.com/zolbooo/powerhusky/webhook/handlers"
 )
 
 func init() {
@@ -28,6 +29,11 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			io.WriteString(w, "OK")
 		}
+		return
+	}
+
+	if r.URL.Path == "/webhook/gitlab" {
+		handlers.GitlabWebhookHandler(w, r)
 		return
 	}
 
