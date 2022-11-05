@@ -1,9 +1,22 @@
 package rpc
 
-import "github.com/zolbooo/powerhusky/daemon/core"
+import (
+	"errors"
 
-type RPCHandler struct{}
+	"github.com/zolbooo/powerhusky/daemon/core"
+)
 
-func (rpc *RPCHandler) ScheduleShutdown() error {
+var (
+	InvalidToken = errors.New("invalid token")
+)
+
+type RPCHandler struct {
+	Token string
+}
+
+func (rpc *RPCHandler) ScheduleShutdown(token string) error {
+	if token != rpc.Token {
+		return InvalidToken
+	}
 	return core.ScheduleShutdown()
 }
