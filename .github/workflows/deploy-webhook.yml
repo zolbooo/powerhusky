@@ -1,0 +1,46 @@
+name: Deploy webhook
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  deploy-webhook:
+    runs-on: ubuntu-latest
+    # TODO: You might want to configure your own environment with different secrets
+    environment: AvtaMata
+    defaults:
+      run:
+        working-directory: ./webhook
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          cache: true
+          # Use latest version of Golang for testing
+          go-version-file: daemon/go.mod
+          cache-dependency-path: webhook/go.sum
+      - name: Install dependencies
+        run: go get .
+      - name: Run tests
+        run: go test -v ./...
+      - name: "Authenticate to Google Cloud"
+        id: auth
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_POOL_ID }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+      - id: "deploy"
+        uses: "google-github-actions/deploy-cloud-functions@v0"
+        with:
+          name: powerhusky
+          entry_point: powerhusky
+          runtime: "go116"
+          service_account_email: ${{ secrets.APP_SERVICE_ACCOUNT }}
+          region: ${{ secrets.APP_REGION }}
+          source_dir: webhook
+          secret_environment_variables: "GITLAB_TOKEN=projects/${{ secrets.APP_PROJECT_ID }}/secrets/powerhusky-gitlab-token,DAEMON_SECRET=projects/${{ secrets.APP_PROJECT_ID }}/secrets/powerhusky-daemon-secret"
+          env_vars: "GCE_INSTANCE_ID=${{ secrets.GCE_INSTANCE_ID }},GCE_INSTANCE_REGION=${{ secrets.GCE_INSTANCE_REGION }},GCP_PROJECT=${{ secrets.GCP_PROJECT }}"
