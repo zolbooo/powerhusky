@@ -50,13 +50,21 @@ func EditCounterData(path string, action func(*CounterData)) (*CounterData, erro
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
 	counterData := &CounterData{}
 	if err = json.NewDecoder(file).Decode(counterData); err != nil {
 		return nil, err
 	}
 	action(counterData)
-	err = json.NewEncoder(file).Encode(counterData)
+
+	// Reset file offset for proper writing
+	if _, err = file.Seek(0, 0); err != nil {
+		return nil, err
+	}
+	if err = json.NewEncoder(file).Encode(counterData); err != nil {
+		return nil, err
+	}
 
 	return counterData, err
 }
