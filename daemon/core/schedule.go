@@ -12,11 +12,15 @@ var (
 	shutdownTask  chrono.ScheduledTask = nil
 )
 
-func ScheduleShutdown() error {
+func CancelShutdown() {
 	if shutdownTask != nil {
-		// Debounce
 		shutdownTask.Cancel()
 	}
+}
+
+func ScheduleShutdown() error {
+	// Debounce
+	CancelShutdown()
 
 	// Schedule shutdown after 1 hour by default
 	task, err := taskScheduler.Schedule(func(ctx context.Context) {
