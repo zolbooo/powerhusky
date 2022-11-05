@@ -24,7 +24,7 @@ This service is being invoked by supported integrations and handles VPS power, c
 
 1. Webhook
    - [x] GCE setup
-   - [ ] Server setup
+   - [x] Server setup (via autodiscovery of IP using GCE API)
    - [x] VPS enabling
    - [x] GitLab integration
 2. Daemon
