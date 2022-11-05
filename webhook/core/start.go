@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/zolbooo/powerhusky/webhook/rpc"
 	compute "google.golang.org/api/compute/v1"
@@ -26,7 +25,7 @@ func StartInstance(ctx context.Context) error {
 	case "STOPPED":
 		fallthrough
 	case "TERMINATED":
-		op, err := client.Instances.Start(os.Getenv(GCP_PROJECT), os.Getenv(GCE_INSTANCE_REGION), os.Getenv(GCE_INSTANCE_ID)).Do()
+		op, err := client.Instances.Start(appConfig.GCPProject, appConfig.GCEInstanceRegion, appConfig.GCEInstanceID).Do()
 		if err != nil {
 			return err
 		}
