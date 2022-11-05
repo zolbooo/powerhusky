@@ -22,22 +22,4 @@ This service is being invoked by supported integrations and handles VPS power, c
 
 ## TODO
 
-1. Webhook
-   - [x] GCE setup
-   - [x] Server setup (via autodiscovery of IP using GCE API)
-   - [x] VPS enabling
-   - [x] GitLab integration
-2. Daemon
-   - [x] Webhook-daemon communication
-   - [x] Power-off logic
-3. Security
-   - [x] Mutual authorization
-4. Refactorings
-   - [x] Webhook configuration
-5. Testing
-   - [ ] GitLab integration
-   - [ ] Webhook authentication
-   - [ ] Daemon job counter
-   - [ ] Daemon authentication
-6. Deployment
-   - [ ] Github Action releases on tags
+See [issue #1](https://github.com/zolbooo/powerhusky/issues/1)
