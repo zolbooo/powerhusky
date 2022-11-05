@@ -15,6 +15,7 @@ var (
 func CancelShutdown() {
 	if shutdownTask != nil {
 		shutdownTask.Cancel()
+		shutdownTask = nil
 	}
 }
 
