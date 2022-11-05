@@ -14,7 +14,8 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           cache: true
-          go-version-file: webhook/go.mod
+          # Use latest version of Golang for testing
+          go-version-file: daemon/go.mod
           cache-dependency-path: webhook/go.sum
       - name: Install dependencies
         run: go get .
