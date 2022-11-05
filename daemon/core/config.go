@@ -6,6 +6,9 @@ import (
 )
 
 type Config struct {
+	Rpc struct {
+		Port int
+	}
 	DisableAutoShutdown bool
 }
 
@@ -19,6 +22,10 @@ func ParseConfig() (*Config, error) {
 	config := &Config{}
 	if err = json.NewDecoder(file).Decode(config); err != nil {
 		return nil, err
+	}
+
+	if config.Rpc.Port == 0 {
+		config.Rpc.Port = 2333
 	}
 	return config, nil
 }
