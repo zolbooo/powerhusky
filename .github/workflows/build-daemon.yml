@@ -18,6 +18,8 @@ jobs:
           cache-dependency-path: daemon/go.sum
       - name: Install dependencies
         run: go get .
+      - name: Run tests
+        run: go test .\...
       - name: Build
         run: go build -v -o powerhusky-daemon cmd/main.go
       - name: Upload artifacts
