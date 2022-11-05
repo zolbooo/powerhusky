@@ -2,13 +2,12 @@ package core
 
 import (
 	"context"
-	"os"
 
 	compute "google.golang.org/api/compute/v1"
 )
 
 func getInstance(client *compute.Service) (*compute.Instance, error) {
-	return client.Instances.Get(os.Getenv(GCP_PROJECT), os.Getenv(GCE_INSTANCE_REGION), os.Getenv(GCE_INSTANCE_ID)).Do()
+	return client.Instances.Get(appConfig.GCPProject, appConfig.GCEInstanceRegion, appConfig.GCEInstanceID).Do()
 }
 
 func GetInstanceIP(ctx context.Context, instance *compute.Instance) (string, error) {
