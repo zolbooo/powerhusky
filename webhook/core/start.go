@@ -24,6 +24,8 @@ func StartInstance(ctx context.Context) error {
 
 	switch instance.Status {
 	case "STOPPED":
+		fallthrough
+	case "TERMINATED":
 		op, err := client.Instances.Start(os.Getenv(GCP_PROJECT), os.Getenv(GCE_INSTANCE_REGION), os.Getenv(GCE_INSTANCE_ID)).Do()
 		if err != nil {
 			return err
