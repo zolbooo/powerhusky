@@ -53,7 +53,7 @@ func StartInstance(ctx context.Context) error {
 		if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
 			return err
 		}
-		return rpcClient.PushTask(GenerateToken(os.Getenv(DAEMON_TOKEN), nonce))
+		return rpcClient.PushTask(GenerateToken(appConfig.DaemonSecret, nonce))
 	default:
 		return fmt.Errorf("unexpected instance state: %s", instance.Status)
 	}

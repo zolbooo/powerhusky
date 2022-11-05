@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 
 	"github.com/zolbooo/powerhusky/webhook/rpc"
 	compute "google.golang.org/api/compute/v1"
@@ -39,7 +38,7 @@ func StopInstance(ctx context.Context) error {
 		if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
 			return err
 		}
-		return rpcClient.RequestShutdown(GenerateToken(os.Getenv(DAEMON_TOKEN), nonce))
+		return rpcClient.RequestShutdown(GenerateToken(appConfig.DaemonSecret, nonce))
 	}
 
 	log.Printf("Warning: unexpected state when stop was requested - %s", instance.Status)
