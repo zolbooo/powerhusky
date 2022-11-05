@@ -26,17 +26,10 @@ func (rpc *RPCHandler) PushTask(token string) error {
 	if token != rpc.Token {
 		return InvalidToken
 	}
-
-	counterData, err := core.LoadCounterData(rpc.CounterFile)
-	if err != nil {
-		return err
-	}
-	counterData.Counter += 1
-	if err = counterData.Save(rpc.CounterFile); err != nil {
-		return err
-	}
-
-	return nil
+	_, err := core.EditCounterData(rpc.CounterFile, func(counterData *core.CounterData) {
+		counterData.Counter += 1
+	})
+	return err
 }
 
 func (rpc *RPCHandler) RequestShutdown(token string) error {
@@ -44,12 +37,10 @@ func (rpc *RPCHandler) RequestShutdown(token string) error {
 		return InvalidToken
 	}
 
-	counterData, err := core.LoadCounterData(rpc.CounterFile)
+	counterData, err := core.EditCounterData(rpc.CounterFile, func(counterData *core.CounterData) {
+		counterData.Counter -= 1
+	})
 	if err != nil {
-		return err
-	}
-	counterData.Counter -= 1
-	if err = counterData.Save(rpc.CounterFile); err != nil {
 		return err
 	}
 

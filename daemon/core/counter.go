@@ -41,3 +41,22 @@ func (counterData *CounterData) Save(path string) error {
 	err = json.NewEncoder(file).Encode(counterData)
 	return err
 }
+
+func EditCounterData(path string, action func(*CounterData)) (*CounterData, error) {
+	fileLock.Lock()
+	defer fileLock.Unlock()
+
+	file, err := os.OpenFile(path, os.O_RDWR, 0600)
+	if err != nil {
+		return nil, err
+	}
+
+	counterData := &CounterData{}
+	if err = json.NewDecoder(file).Decode(counterData); err != nil {
+		return nil, err
+	}
+	action(counterData)
+	err = json.NewEncoder(file).Encode(counterData)
+
+	return counterData, err
+}
