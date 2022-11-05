@@ -16,12 +16,13 @@ func printUsage() {
 	fmt.Println("\tuninstall - uninstall daemon and disable service")
 }
 
-func runService(svc service.Service) {
+func runService(svc service.Service, daemonSvc *daemon.Service) {
 	logger, err := svc.Logger(nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	daemonSvc.Logger = logger
 	err = svc.Run()
 	if err != nil {
 		logger.Error(err)
@@ -35,7 +36,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	svc, err := service.New(&daemon.Service{}, daemon.ServiceConfig)
+	daemonSvc := &daemon.Service{}
+	svc, err := service.New(daemonSvc, daemon.ServiceConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,5 +64,5 @@ func main() {
 		}
 	}
 
-	runService(svc)
+	runService(svc, daemonSvc)
 }

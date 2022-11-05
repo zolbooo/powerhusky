@@ -15,6 +15,8 @@ var ServiceConfig = &service.Config{
 type Service struct {
 	ctx    context.Context
 	cancel context.CancelFunc
+
+	Logger service.Logger
 }
 
 func (s *Service) Start(svg service.Service) error {
