@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/kardianos/service"
+	"github.com/zolbooo/powerhusky/daemon/core"
 )
 
 var ServiceConfig = &service.Config{
@@ -23,7 +24,12 @@ func (s *Service) Start(svg service.Service) error {
 	s.ctx, s.cancel = context.WithCancel(context.Background())
 	// Start should not block. Do the actual work async.
 	go func() {
-		// TODO: Implement service
+		err := core.ScheduleShutdown()
+		if err != nil {
+			s.Logger.Errorf("failed to schedule shutdown: %v", err)
+		}
+
+		// TODO: Implement RPC listener
 	}()
 	return nil
 }
