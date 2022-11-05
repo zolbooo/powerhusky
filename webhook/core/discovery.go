@@ -15,12 +15,7 @@ func getInstance(ctx context.Context) (*compute.Instance, error) {
 	return client.Instances.Get(os.Getenv(GCP_PROJECT), os.Getenv(GCE_INSTANCE_REGION), os.Getenv(GCE_INSTANCE_ID)).Do()
 }
 
-func GetInstanceIP(ctx context.Context) (string, error) {
-	instance, err := getInstance(ctx)
-	if err != nil {
-		return "", err
-	}
-
+func GetInstanceIP(ctx context.Context, instance *compute.Instance) (string, error) {
 	// See: https://cloud.google.com/compute/docs/instances/view-ip-address#api
 	for _, iface := range instance.NetworkInterfaces {
 		for _, accessConfig := range iface.AccessConfigs {

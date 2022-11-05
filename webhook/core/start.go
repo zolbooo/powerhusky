@@ -34,7 +34,7 @@ func StartInstance(ctx context.Context) error {
 			return fmt.Errorf("failed to start instance: %s", string(errData))
 		}
 	case "RUNNING":
-		addr, err := GetInstanceIP(ctx)
+		addr, err := GetInstanceIP(ctx, instance)
 		if err != nil {
 			return err
 		}
@@ -45,6 +45,8 @@ func StartInstance(ctx context.Context) error {
 		}
 		defer closer()
 		return rpcClient.PushTask(os.Getenv(DAEMON_TOKEN))
+	default:
+		return fmt.Errorf("unexpected instance state: %s", instance.Status)
 	}
 
 	return nil
