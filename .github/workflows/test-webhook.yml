@@ -1,0 +1,22 @@
+name: Test webhook
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./daemon
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          cache: true
+          go-version-file: webhook/go.mod
+          cache-dependency-path: webhook/go.sum
+      - name: Install dependencies
+        run: go get .
+      - name: Run tests
+        run: go test -v ./...
