@@ -33,6 +33,11 @@ This service is being invoked by supported integrations and handles VPS power, c
 3. Security
    - [x] Mutual authorization
 4. Refactorings
-   - [ ] Webhook configuration
-5. Deployment
+   - [x] Webhook configuration
+5. Testing
+   - [ ] GitLab integration
+   - [ ] Webhook authentication
+   - [ ] Daemon job counter
+   - [ ] Daemon authentication
+6. Deployment
    - [ ] Github Action releases on tags
