@@ -15,7 +15,9 @@ type Config struct {
 			KeyFile  string
 		}
 	}
+
 	DisableAutoShutdown bool
+	CounterPath         string
 }
 
 func ParseConfig() (*Config, error) {
@@ -35,6 +37,9 @@ func ParseConfig() (*Config, error) {
 	}
 	if config.Rpc.Token == "" {
 		return nil, errors.New("no RPC token provided")
+	}
+	if config.CounterPath == "" {
+		config.CounterPath = "/var/run/powerhusky.pid"
 	}
 	return config, nil
 }
