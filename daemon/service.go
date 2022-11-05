@@ -24,11 +24,16 @@ func (s *Service) Start(svg service.Service) error {
 	s.ctx, s.cancel = context.WithCancel(context.Background())
 	// Start should not block. Do the actual work async.
 	go func() {
-		err := core.ScheduleShutdown()
+		config, err := core.ParseConfig()
 		if err != nil {
-			s.Logger.Errorf("failed to schedule shutdown: %v", err)
+			s.Logger.Errorf("failed to parse config: %v", err)
 		}
 
+		if !config.DisableAutoShutdown {
+			if err = core.ScheduleShutdown(); err != nil {
+				s.Logger.Errorf("failed to schedule shutdown: %v", err)
+			}
+		}
 		// TODO: Implement RPC listener
 	}()
 	return nil
