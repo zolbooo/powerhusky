@@ -22,8 +22,13 @@ func handleJobEvent(jobEvent gitlab.JobEventPayload) error {
 }
 func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) error {
 	log.Printf("Job %d is using runner %d, status is %s", buildEvent.BuildID, buildEvent.Runner.ID, buildEvent.BuildStatus)
-	if buildEvent.Runner.ID == 0 && !buildEvent.Runner.IsShared {
-		return core.StartInstance(ctx)
+	if buildEvent.BuildStatus == "pending" {
+		if buildEvent.Runner.ID == 0 && !buildEvent.Runner.IsShared {
+			return core.StartInstance(ctx)
+		}
+	} else if buildEvent.BuildFinishedAt.IsZero() {
+		// Job has finished, stop instance
+		return core.StopInstance(ctx)
 	}
 	return nil
 }
