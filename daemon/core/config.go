@@ -10,6 +10,10 @@ type Config struct {
 	Rpc struct {
 		Port  int
 		Token string
+		Tls   struct {
+			CertFile string
+			KeyFile  string
+		}
 	}
 	DisableAutoShutdown bool
 }
