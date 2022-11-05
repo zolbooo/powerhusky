@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"errors"
+	"time"
 
 	"github.com/zolbooo/powerhusky/daemon/core"
 )
@@ -46,7 +47,11 @@ func (rpc *RPCHandler) RequestShutdown(token string) error {
 	}
 
 	if counterData.Counter == 0 {
-		core.Shutdown()
+		// Give some time to server to send the response
+		go func() {
+			time.Sleep(time.Second * 5)
+			core.Shutdown()
+		}()
 	}
 	return nil
 }
