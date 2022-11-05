@@ -42,7 +42,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	switch os.Args[1] {
+	var command = ""
+	if service.Interactive() && len(os.Args) > 1 {
+		command = os.Args[1]
+	}
+	switch command {
 	case "install":
 		err = svc.Install()
 		if err != nil {
