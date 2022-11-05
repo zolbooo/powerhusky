@@ -17,7 +17,13 @@ func init() {
 }
 
 func shouldIgnoreEvent(buildEvent gitlab.BuildEventPayload) bool {
-	return buildEvent.BuildStatus == "created" || buildEvent.BuildStatus == "running"
+	return buildEvent.BuildStatus == "created"
+}
+func shouldStartInstance(buildEvent gitlab.BuildEventPayload) bool {
+	if buildEvent.BuildStatus != "pending" && buildEvent.BuildStatus != "running" {
+		return false
+	}
+	return !buildEvent.Runner.IsShared
 }
 
 func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) error {
@@ -25,10 +31,8 @@ func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) 
 	if shouldIgnoreEvent(buildEvent) {
 		return nil
 	}
-	if buildEvent.BuildStatus == "pending" {
-		if buildEvent.Runner.ID == 0 && !buildEvent.Runner.IsShared {
-			return core.StartInstance(ctx)
-		}
+	if shouldStartInstance(buildEvent) {
+		return core.StartInstance(ctx)
 	} else if !buildEvent.BuildFinishedAt.IsZero() && !buildEvent.Runner.IsShared {
 		// Job has finished, stop instance
 		return core.StopInstance(ctx)
