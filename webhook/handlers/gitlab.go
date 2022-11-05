@@ -15,6 +15,7 @@ func GitlabWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	payload, err := hook.Parse(r, gitlab.JobEvents)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Failed to parse request payload: %v", err)
 		return
 	}
 
