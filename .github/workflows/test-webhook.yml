@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./daemon
+        working-directory: ./webhook
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
