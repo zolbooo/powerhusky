@@ -25,6 +25,10 @@ func VerifyToken(secret string, token string) bool {
 	}
 
 	hmac := hmac.New(sha512.New, []byte(secret))
+	if len(tokenData) <= hmac.Size() {
+		return false
+	}
+
 	nonce := tokenData[0 : len(tokenData)-hmac.Size()]
 	digest := tokenData[len(tokenData)-hmac.Size():]
 	hmac.Write(nonce)
