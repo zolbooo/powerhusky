@@ -4,7 +4,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  test-webhook:
     runs-on: ubuntu-latest
     defaults:
       run:
