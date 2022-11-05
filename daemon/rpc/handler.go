@@ -11,7 +11,8 @@ var (
 )
 
 type RPCHandler struct {
-	Token string
+	Token       string
+	CounterFile string
 }
 
 func (rpc *RPCHandler) ScheduleShutdown(token string) error {
@@ -19,4 +20,24 @@ func (rpc *RPCHandler) ScheduleShutdown(token string) error {
 		return InvalidToken
 	}
 	return core.ScheduleShutdown()
+}
+
+func (rpc *RPCHandler) RequestShutdown(token string) error {
+	if token != rpc.Token {
+		return InvalidToken
+	}
+
+	counterData, err := core.LoadCounterData(rpc.CounterFile)
+	if err != nil {
+		return err
+	}
+	counterData.Counter -= 1
+	if err = counterData.Save(rpc.CounterFile); err != nil {
+		return err
+	}
+
+	if counterData.Counter == 0 {
+		core.Shutdown()
+	}
+	return nil
 }
