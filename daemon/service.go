@@ -21,7 +21,7 @@ type Service struct {
 	Logger service.Logger
 }
 
-func (s *Service) Start(svg service.Service) error {
+func (s *Service) Start(svc service.Service) error {
 	s.ctx, s.cancel = context.WithCancel(context.Background())
 	// Start should not block. Do the actual work async.
 	go func() {
