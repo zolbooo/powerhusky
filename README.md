@@ -31,4 +31,6 @@ This service is being invoked by supported integrations and handles VPS power, c
    - [x] Webhook-daemon communication
    - [x] Power-off logic
 3. Security
-   - [ ] Mutual authorization
+   - [x] Mutual authorization
+4. Refactorings
+   - [ ] Webhook configuration
