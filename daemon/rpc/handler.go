@@ -22,6 +22,23 @@ func (rpc *RPCHandler) ScheduleShutdown(token string) error {
 	return core.ScheduleShutdown()
 }
 
+func (rpc *RPCHandler) PushTask(token string) error {
+	if token != rpc.Token {
+		return InvalidToken
+	}
+
+	counterData, err := core.LoadCounterData(rpc.CounterFile)
+	if err != nil {
+		return err
+	}
+	counterData.Counter += 1
+	if err = counterData.Save(rpc.CounterFile); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (rpc *RPCHandler) RequestShutdown(token string) error {
 	if token != rpc.Token {
 		return InvalidToken
