@@ -5,6 +5,7 @@ import (
 
 	"github.com/kardianos/service"
 	"github.com/zolbooo/powerhusky/daemon/core"
+	"github.com/zolbooo/powerhusky/daemon/rpc"
 )
 
 var ServiceConfig = &service.Config{
@@ -38,7 +39,13 @@ func (s *Service) Start(svg service.Service) error {
 				s.Logger.Errorf("failed to schedule shutdown: %v", err)
 			}
 		}
-		// TODO: Implement RPC listener
+
+		var tlsOptions *rpc.TLSOptions = nil
+		if config.Rpc.Tls.CertFile != "" && config.Rpc.Tls.KeyFile != "" {
+			tlsOptions = &rpc.TLSOptions{CertFile: tlsOptions.CertFile, KeyFile: config.Rpc.Tls.KeyFile}
+		}
+		rpc.InitServer(s.ctx, config.Rpc.Token, config.Rpc.Port, tlsOptions)
+		s.Logger.Infof("RPC running on port %d, using TLS: %v", config.Rpc.Port, tlsOptions != nil)
 	}()
 	return nil
 }
