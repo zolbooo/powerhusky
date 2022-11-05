@@ -1,0 +1,24 @@
+name: Build daemon
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./daemon
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          cache: true
+          go-version-file: daemon/go.mod
+          cache-dependency-path: daemon/go.sum
+      - name: Install dependencies
+        run: go get .
+      - name: Build
+        run: go build -v -o powerhusky-daemon cmd/main.go
+      - name: Upload artifacts
+        with:
+          name: powerhusky-daemon
+          path: powerhusky-daemon
