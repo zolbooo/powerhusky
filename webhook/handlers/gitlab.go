@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -19,8 +20,11 @@ func handleJobEvent(jobEvent gitlab.JobEventPayload) error {
 	log.Printf("Job %d is using runner %d, status is %s", jobEvent.BuildID, jobEvent.Runner.ID, jobEvent.BuildStatus)
 	return nil
 }
-func handleBuildEvent(buildEvent gitlab.BuildEventPayload) error {
+func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) error {
 	log.Printf("Job %d is using runner %d, status is %s", buildEvent.BuildID, buildEvent.Runner.ID, buildEvent.BuildStatus)
+	if buildEvent.Runner.ID == 0 && !buildEvent.Runner.IsShared {
+		return core.StartInstance(ctx)
+	}
 	return nil
 }
 
@@ -45,8 +49,10 @@ func GitlabWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	buildEvent, ok := payload.(gitlab.BuildEventPayload)
 	if ok {
-		err := handleBuildEvent(buildEvent)
-		if err != nil {
+		err := handleBuildEvent(r.Context(), buildEvent)
+		if err == context.DeadlineExceeded || err == context.Canceled {
+			w.WriteHeader(http.StatusRequestTimeout)
+		} else if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Printf("failed to handle job event: %v", err)
 		} else {
