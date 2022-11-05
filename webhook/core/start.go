@@ -15,7 +15,7 @@ func StartInstance(ctx context.Context) error {
 		return err
 	}
 
-	instance, err := getInstance(ctx)
+	instance, err := getInstance(client)
 	if err != nil {
 		return err
 	}

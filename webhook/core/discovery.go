@@ -7,11 +7,7 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-func getInstance(ctx context.Context) (*compute.Instance, error) {
-	client, err := compute.NewService(ctx)
-	if err != nil {
-		return nil, err
-	}
+func getInstance(client *compute.Service) (*compute.Instance, error) {
 	return client.Instances.Get(os.Getenv(GCP_PROJECT), os.Getenv(GCE_INSTANCE_REGION), os.Getenv(GCE_INSTANCE_ID)).Do()
 }
 
