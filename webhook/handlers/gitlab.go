@@ -9,9 +9,13 @@ import (
 	"github.com/zolbooo/powerhusky/webhook/core"
 )
 
-func GitlabWebhookHandler(w http.ResponseWriter, r *http.Request) {
-	hook, _ := gitlab.New(gitlab.Options.Secret(os.Getenv(core.GITLAB_TOKEN)))
+var hook *gitlab.Webhook
 
+func init() {
+	hook, _ = gitlab.New(gitlab.Options.Secret(os.Getenv(core.GITLAB_TOKEN)))
+}
+
+func GitlabWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	payload, err := hook.Parse(r, gitlab.JobEvents)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
