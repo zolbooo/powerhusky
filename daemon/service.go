@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"context"
+	"os"
 
 	"github.com/kardianos/service"
 	"github.com/zolbooo/powerhusky/daemon/core"
@@ -30,7 +31,7 @@ func (s *Service) Start(svc service.Service) error {
 			s.Logger.Errorf("failed to parse config: %v", err)
 		}
 		if config == nil {
-			s.Logger.Error("no required config options are provided, exiting")
+			s.Logger.Error("Fatal: no required config options are provided")
 			return
 		}
 
@@ -38,6 +39,12 @@ func (s *Service) Start(svc service.Service) error {
 			if err = core.ScheduleShutdown(); err != nil {
 				s.Logger.Errorf("failed to schedule shutdown: %v", err)
 			}
+		}
+
+		counterData := &core.CounterData{Counter: 1, Pid: os.Getpid()}
+		if err = counterData.Save(config.CounterPath); err != nil {
+			s.Logger.Errorf("Fatal: failed to save counter file: %v", err)
+			return
 		}
 
 		var tlsOptions *rpc.TLSOptions = nil
