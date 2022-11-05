@@ -12,7 +12,7 @@ type RPCClient struct {
 	PushTask         func(string) error
 }
 
-func CreateRPCClient(ctx context.Context, addr string) (jsonrpc.ClientCloser, *RPCClient, error) {
+func CreateClient(ctx context.Context, addr string) (jsonrpc.ClientCloser, *RPCClient, error) {
 	client := &RPCClient{}
 	closer, err := jsonrpc.NewClient(ctx, addr, "RPCHandler", client, nil)
 	if err != nil {
