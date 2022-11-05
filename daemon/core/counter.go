@@ -3,7 +3,10 @@ package core
 import (
 	"encoding/json"
 	"os"
+	"sync"
 )
+
+var fileLock = &sync.RWMutex{}
 
 type CounterData struct {
 	Pid     int
@@ -11,6 +14,9 @@ type CounterData struct {
 }
 
 func LoadCounterData(path string) (*CounterData, error) {
+	fileLock.RLock()
+	defer fileLock.RUnlock()
+
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -24,6 +30,9 @@ func LoadCounterData(path string) (*CounterData, error) {
 }
 
 func (counterData *CounterData) Save(path string) error {
+	fileLock.Lock()
+	defer fileLock.Unlock()
+
 	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
 		return err
