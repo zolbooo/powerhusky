@@ -25,6 +25,7 @@ gcloud functions deploy powerhusky \
 3. Configure environment variables:
 
    - GITLAB_TOKEN
+   - DAEMON_SECRET
    - GCP_PROJECT
    - GCE_INSTANCE_ID
    - GCE_INSTANCE_REGION
