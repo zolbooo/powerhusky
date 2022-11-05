@@ -31,7 +31,7 @@ func runService(svc service.Service, daemonSvc *daemon.Service) {
 }
 
 func main() {
-	if len(os.Args) < 2 {
+	if service.Interactive() && len(os.Args) < 2 {
 		printUsage()
 		os.Exit(1)
 	}
