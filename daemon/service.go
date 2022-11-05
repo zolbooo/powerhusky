@@ -36,8 +36,11 @@ func (s *Service) Start(svc service.Service) error {
 		}
 
 		if !config.DisableAutoShutdown {
-			if err = core.ScheduleShutdown(); err != nil {
+			shutdownTime, err := core.ScheduleShutdown()
+			if err != nil {
 				s.Logger.Errorf("failed to schedule shutdown: %v", err)
+			} else {
+				s.Logger.Infof("Shutdown was scheduled to %s", shutdownTime.String())
 			}
 		}
 

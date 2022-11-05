@@ -18,17 +18,19 @@ func CancelShutdown() {
 	}
 }
 
-func ScheduleShutdown() error {
+func ScheduleShutdown() (*time.Time, error) {
 	// Debounce
 	CancelShutdown()
 
-	// Schedule shutdown after 1 hour by default
+	shutdownTime := time.Now().Add(time.Hour)
+
 	task, err := taskScheduler.Schedule(func(ctx context.Context) {
 		Shutdown()
-	}, chrono.WithTime(time.Now().Add(time.Hour)))
+	}, chrono.WithTime(shutdownTime))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	shutdownTask = task
-	return nil
+
+	return &shutdownTime, nil
 }
