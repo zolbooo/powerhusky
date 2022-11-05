@@ -16,10 +16,6 @@ func init() {
 	hook, _ = gitlab.New(gitlab.Options.Secret(os.Getenv(core.GITLAB_TOKEN)))
 }
 
-func handleJobEvent(jobEvent gitlab.JobEventPayload) error {
-	log.Printf("Job %d is using runner %d, status is %s", jobEvent.BuildID, jobEvent.Runner.ID, jobEvent.BuildStatus)
-	return nil
-}
 func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) error {
 	log.Printf("Job %d is using runner %d, status is %s", buildEvent.BuildID, buildEvent.Runner.ID, buildEvent.BuildStatus)
 	if buildEvent.BuildStatus == "created" || buildEvent.BuildStatus == "running" {
@@ -43,18 +39,12 @@ func GitlabWebhookHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Failed to parse request payload: %v", err)
 		return
 	}
-
-	jobEvent, ok := payload.(gitlab.JobEventPayload)
-	if ok {
-		err := handleJobEvent(jobEvent)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("failed to handle job event: %v", err)
-		} else {
-			w.WriteHeader(http.StatusOK)
-		}
+	if jobEvent, ok := payload.(gitlab.JobEventPayload); ok {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Unexpected job event: %+v", jobEvent)
 		return
 	}
+
 	buildEvent, ok := payload.(gitlab.BuildEventPayload)
 	if ok {
 		err := handleBuildEvent(r.Context(), buildEvent)
