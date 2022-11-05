@@ -51,7 +51,7 @@ func (s *Service) run() {
 	if config.Rpc.Tls.CertFile != "" && config.Rpc.Tls.KeyFile != "" {
 		tlsOptions = &rpc.TLSOptions{CertFile: tlsOptions.CertFile, KeyFile: config.Rpc.Tls.KeyFile}
 	}
-	rpc.InitServer(s.ctx, config.Rpc.Token, config.Rpc.Port, tlsOptions)
+	rpc.InitServer(s.ctx, &rpc.RPCHandler{Token: config.Rpc.Token, CounterFile: config.CounterPath}, config.Rpc.Port, tlsOptions)
 	s.Logger.Infof("RPC running on port %d, using TLS: %v", config.Rpc.Port, tlsOptions != nil)
 }
 
