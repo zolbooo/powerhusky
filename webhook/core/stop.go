@@ -2,7 +2,9 @@ package core
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
+	"io"
 	"log"
 	"os"
 
@@ -32,7 +34,12 @@ func StopInstance(ctx context.Context) error {
 			return err
 		}
 		defer closer()
-		return rpcClient.RequestShutdown(os.Getenv(DAEMON_TOKEN))
+
+		nonce := make([]byte, 16)
+		if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+			return err
+		}
+		return rpcClient.RequestShutdown(GenerateToken(os.Getenv(DAEMON_TOKEN), nonce))
 	}
 
 	log.Printf("Warning: unexpected state when stop was requested - %s", instance.Status)

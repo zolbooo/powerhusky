@@ -2,7 +2,9 @@ package core
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/zolbooo/powerhusky/webhook/rpc"
@@ -44,7 +46,12 @@ func StartInstance(ctx context.Context) error {
 			return err
 		}
 		defer closer()
-		return rpcClient.PushTask(os.Getenv(DAEMON_TOKEN))
+
+		nonce := make([]byte, 16)
+		if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+			return err
+		}
+		return rpcClient.PushTask(GenerateToken(os.Getenv(DAEMON_TOKEN), nonce))
 	default:
 		return fmt.Errorf("unexpected instance state: %s", instance.Status)
 	}
