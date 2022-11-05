@@ -8,6 +8,7 @@ import (
 
 const (
 	GITLAB_TOKEN = "GITLAB_TOKEN"
+	DAEMON_TOKEN = "DAEMON_TOKEN"
 
 	GCP_PROJECT         = "GCP_PROJECT"
 	GCE_INSTANCE_ID     = "GCE_INSTANCE_ID"
@@ -15,9 +16,14 @@ const (
 )
 
 func HealthHandler(w http.ResponseWriter, r *http.Request) {
-	if os.Getenv("GITLAB_TOKEN") == "" {
+	if os.Getenv(GITLAB_TOKEN) == "" {
 		w.WriteHeader(http.StatusConflict)
 		io.WriteString(w, "GITLAB_TOKEN environment variable is not defined")
+		return
+	}
+	if os.Getenv(DAEMON_TOKEN) == "" {
+		w.WriteHeader(http.StatusConflict)
+		io.WriteString(w, "DAEMON_TOKEN environment variable is not defined")
 		return
 	}
 
