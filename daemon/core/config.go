@@ -2,12 +2,14 @@ package core
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 )
 
 type Config struct {
 	Rpc struct {
-		Port int
+		Port  int
+		Token string
 	}
 	DisableAutoShutdown bool
 }
@@ -26,6 +28,9 @@ func ParseConfig() (*Config, error) {
 
 	if config.Rpc.Port == 0 {
 		config.Rpc.Port = 2333
+	}
+	if config.Rpc.Token == "" {
+		return nil, errors.New("no RPC token provided")
 	}
 	return config, nil
 }
