@@ -34,3 +34,5 @@ This service is being invoked by supported integrations and handles VPS power, c
    - [x] Mutual authorization
 4. Refactorings
    - [ ] Webhook configuration
+5. Deployment
+   - [ ] Github Action releases on tags
