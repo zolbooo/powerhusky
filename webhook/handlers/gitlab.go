@@ -16,9 +16,13 @@ func init() {
 	hook, _ = gitlab.New(gitlab.Options.Secret(os.Getenv(core.GITLAB_TOKEN)))
 }
 
+func shouldIgnoreEvent(buildEvent gitlab.BuildEventPayload) bool {
+	return buildEvent.BuildStatus == "created" || buildEvent.BuildStatus == "running"
+}
+
 func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) error {
 	log.Printf("Job %d is using runner %d, status is %s", buildEvent.BuildID, buildEvent.Runner.ID, buildEvent.BuildStatus)
-	if buildEvent.BuildStatus == "created" || buildEvent.BuildStatus == "running" {
+	if shouldIgnoreEvent(buildEvent) {
 		return nil
 	}
 	if buildEvent.BuildStatus == "pending" {
