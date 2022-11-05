@@ -10,7 +10,7 @@ For example, I have a powerful server to run Android app build jobs (on GitLab),
 
 ## Architecture
 
-There are two key parts of this toolchain: daemon and webhook. **Note:** currently, only GCE and Gitlab are supported.
+There are two key parts of this toolchain: daemon and webhook. They communicate with each other using JSON-RPC 2.0 with namespace `RPCHandler`. For client specs, please see `webhook/rpc/client.go`. **Note:** currently, only GCE and Gitlab are supported.
 
 ### Daemon
 
@@ -30,3 +30,5 @@ This service is being invoked by supported integrations and handles VPS power, c
 2. Daemon
    - [x] Webhook-daemon communication
    - [x] Power-off logic
+3. Security
+   - [ ] Mutual authorization
