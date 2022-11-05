@@ -28,6 +28,10 @@ func (s *Service) Start(svg service.Service) error {
 		if err != nil {
 			s.Logger.Errorf("failed to parse config: %v", err)
 		}
+		if config == nil {
+			s.Logger.Error("no required config options are provided, exiting")
+			return
+		}
 
 		if !config.DisableAutoShutdown {
 			if err = core.ScheduleShutdown(); err != nil {
