@@ -23,9 +23,9 @@ This service is being invoked by supported integrations and handles VPS power, c
 ## TODO
 
 1. Webhook
-   - GCE setup
-   - Server setup
-   - VPS enabling
+   - [x] GCE setup
+   - [ ] Server setup
+   - [x] VPS enabling
 2. Daemon
-   - Webhook-daemon communication
-   - Power-off logic
+   - [ ] Webhook-daemon communication
+   - [ ] Power-off logic
