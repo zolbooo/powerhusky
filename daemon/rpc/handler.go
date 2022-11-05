@@ -19,7 +19,8 @@ func (rpc *RPCHandler) ScheduleShutdown(token string) error {
 	if !core.VerifyToken(rpc.Token, token) {
 		return InvalidToken
 	}
-	return core.ScheduleShutdown()
+	_, err := core.ScheduleShutdown()
+	return err
 }
 
 func (rpc *RPCHandler) PushTask(token string) error {
