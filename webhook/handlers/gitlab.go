@@ -22,7 +22,7 @@ func handleJobEvent(jobEvent gitlab.JobEventPayload) error {
 }
 func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) error {
 	log.Printf("Job %d is using runner %d, status is %s", buildEvent.BuildID, buildEvent.Runner.ID, buildEvent.BuildStatus)
-	if buildEvent.BuildStatus == "created" {
+	if buildEvent.BuildStatus == "created" || buildEvent.BuildStatus == "running" {
 		return nil
 	}
 	if buildEvent.BuildStatus == "pending" {
