@@ -29,7 +29,7 @@ func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) 
 		if buildEvent.Runner.ID == 0 && !buildEvent.Runner.IsShared {
 			return core.StartInstance(ctx)
 		}
-	} else if buildEvent.BuildFinishedAt.IsZero() {
+	} else if !buildEvent.BuildFinishedAt.IsZero() {
 		// Job has finished, stop instance
 		return core.StopInstance(ctx)
 	}
