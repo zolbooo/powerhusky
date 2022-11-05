@@ -14,10 +14,10 @@ type TLSOptions struct {
 	KeyFile  string
 }
 
-func InitServer(ctx context.Context, port int, tlsOptions *TLSOptions) {
+func InitServer(ctx context.Context, token string, port int, tlsOptions *TLSOptions) {
 	rpcServer := jsonrpc.NewServer()
 
-	serverHandler := &RPCHandler{}
+	serverHandler := &RPCHandler{Token: token}
 	rpcServer.Register("RPCHandler", serverHandler)
 
 	server := &http.Server{Addr: fmt.Sprintf(":%d", port), Handler: rpcServer}
