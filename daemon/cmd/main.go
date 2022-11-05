@@ -2,7 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+
+	"github.com/kardianos/service"
+	"github.com/zolbooo/powerhusky/daemon"
 )
 
 func printUsage() {
@@ -12,16 +16,51 @@ func printUsage() {
 	fmt.Println("\tuninstall - uninstall daemon and disable service")
 }
 
+func runService(svc service.Service) {
+	logger, err := svc.Logger(nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = svc.Run()
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+}
+
 func main() {
-	// installCmd := flag.NewFlagSet("install", flag.ExitOnError)
 	if len(os.Args) < 2 {
 		printUsage()
 		os.Exit(1)
 	}
 
-	switch os.Args[1] {
-	default:
-		printUsage()
-		os.Exit(1)
+	svc, err := service.New(&daemon.Service{}, daemon.ServiceConfig)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	switch os.Args[1] {
+	case "install":
+		err = svc.Install()
+		if err != nil {
+			fmt.Printf("Failed to install service: %v\n", err)
+			os.Exit(2)
+		}
+		os.Exit(0)
+	case "uninstall":
+		err = svc.Uninstall()
+		if err != nil {
+			fmt.Printf("Failed to uninstall service: %v\n", err)
+			os.Exit(2)
+		}
+		os.Exit(0)
+	default:
+		if service.Interactive() {
+			printUsage()
+			os.Exit(1)
+		}
+	}
+
+	runService(svc)
 }
