@@ -16,14 +16,14 @@ type RPCHandler struct {
 }
 
 func (rpc *RPCHandler) ScheduleShutdown(token string) error {
-	if token != rpc.Token {
+	if !core.VerifyToken(rpc.Token, token) {
 		return InvalidToken
 	}
 	return core.ScheduleShutdown()
 }
 
 func (rpc *RPCHandler) PushTask(token string) error {
-	if token != rpc.Token {
+	if !core.VerifyToken(rpc.Token, token) {
 		return InvalidToken
 	}
 	_, err := core.EditCounterData(rpc.CounterFile, func(counterData *core.CounterData) {
@@ -33,7 +33,7 @@ func (rpc *RPCHandler) PushTask(token string) error {
 }
 
 func (rpc *RPCHandler) RequestShutdown(token string) error {
-	if token != rpc.Token {
+	if !core.VerifyToken(rpc.Token, token) {
 		return InvalidToken
 	}
 
