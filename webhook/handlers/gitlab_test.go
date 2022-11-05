@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"testing"
+	"time"
 
 	"github.com/go-playground/webhooks/v6/gitlab"
 )
@@ -47,5 +48,21 @@ func TestStartInstance(t *testing.T) {
 	}
 	if !shouldStartInstance(gitlab.BuildEventPayload{BuildStatus: "running", Runner: gitlab.Runner{IsShared: false}}) {
 		t.Error("instance must be started when job is running on non-shared instance")
+	}
+}
+
+func TestStopInstance(t *testing.T) {
+	if shouldStopInstance(gitlab.BuildEventPayload{BuildStatus: "pending"}, time.Time{}) {
+		t.Error("instance must not be stopped when job is running")
+	}
+	if shouldStopInstance(gitlab.BuildEventPayload{BuildStatus: "running"}, time.Time{}) {
+		t.Error("instance must not be stopped when job is running")
+	}
+
+	if !shouldStopInstance(gitlab.BuildEventPayload{BuildStatus: "failed"}, time.Now()) {
+		t.Error("instance must be stopped when job has failed")
+	}
+	if !shouldStopInstance(gitlab.BuildEventPayload{BuildStatus: "success"}, time.Now()) {
+		t.Error("instance must be stopped when job has failed")
 	}
 }

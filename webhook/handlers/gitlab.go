@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-playground/webhooks/v6/gitlab"
 	"github.com/zolbooo/powerhusky/webhook/core"
@@ -26,6 +27,11 @@ func shouldStartInstance(buildEvent gitlab.BuildEventPayload) bool {
 	return !buildEvent.Runner.IsShared
 }
 
+// We use separate finishedTime parameter because it's difficult to mock gitlab.customTime type
+func shouldStopInstance(buildEvent gitlab.BuildEventPayload, finishedTime time.Time) bool {
+	return !finishedTime.IsZero() && !buildEvent.Runner.IsShared
+}
+
 func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) error {
 	log.Printf("Job %d is using runner %d, status is %s", buildEvent.BuildID, buildEvent.Runner.ID, buildEvent.BuildStatus)
 	if shouldIgnoreEvent(buildEvent) {
@@ -33,8 +39,8 @@ func handleBuildEvent(ctx context.Context, buildEvent gitlab.BuildEventPayload) 
 	}
 	if shouldStartInstance(buildEvent) {
 		return core.StartInstance(ctx)
-	} else if !buildEvent.BuildFinishedAt.IsZero() && !buildEvent.Runner.IsShared {
-		// Job has finished, stop instance
+	}
+	if shouldStopInstance(buildEvent, buildEvent.BuildFinishedAt.Time) {
 		return core.StopInstance(ctx)
 	}
 	return nil
