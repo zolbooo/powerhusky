@@ -1,10 +1,10 @@
-name: Build daemon
+name: Test daemon
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build:
+  test-daemon:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -20,11 +20,3 @@ jobs:
         run: go get .
       - name: Run tests
         run: go test ./...
-      - name: Build
-        run: go build -v -o powerhusky-daemon cmd/main.go
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: powerhusky-daemon
-          path: daemon/powerhusky-daemon
-          if-no-files-found: error
